@@ -1,7 +1,9 @@
 .env
 embeddings/
 
-file-system-chat/__pycache__/
+_pycache__/
 
 sample-files/
 demo-files/
+
+env/
