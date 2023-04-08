@@ -26,7 +26,7 @@ def file():
 def chat():
     query = request.form['query']
     result = dummy_chat(query=query)
-    return jsonify({"answer": result}), 200
+    return jsonify({"response": result}), 200
 
 if __name__ == '__main__':
    app.run()

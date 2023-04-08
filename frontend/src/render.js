@@ -17,7 +17,7 @@ const fileRequest = (requestObject) => {
   axios
     .post(`${SERVER_URL}/file`, requestObject)
     .then((response) => {
-      console.log("Server response", response.data);
+      return response.data;
     })
     .catch((error) => {
       console.error(error);
@@ -28,7 +28,7 @@ const chatRequest = (requestObject) => {
   axios
     .post(`${SERVER_URL}/chat`)
     .then((response) => {
-      console.log(response.data);
+      return response.data.response
     })
     .catch((error) => {
       console.error(error);
@@ -47,19 +47,15 @@ selectDirectoryButton.addEventListener('click', () => {
   ipcRenderer.send('open-directory-dialog');
 });
 
-ipcRenderer.on('selected-directory', (event, directoryPath) => {
-  // Clear the current file list
-  fileList.innerHTML = '';
-
-  // Get the directory contents
-  const fs = require('fs');
-
-  const fileRequestObject = {
-    path: directoryPath
+chatText.addEventListener('keydown', (event) => {
+  if (event.key === 'Enter') {
+    event.preventDefault(); // Prevent the form from submitting
+    chatSubmitButton.click() // Submit the form
   }
-  fileRequest(fileRequestObject);
+});
 
-  chatSubmitButton.addEventListener('click', () => {
+chatSubmitButton.addEventListener('click', () => {
+  if (chatText.value.length > 0) {
     // Add a chat
     const newChat = document.createElement('div');
     newChat.classList.add('bg-blue-500');
@@ -74,30 +70,52 @@ ipcRenderer.on('selected-directory', (event, directoryPath) => {
     newChat.textContent = chatText.value;
     chatText.value = '';
     chatContainer.appendChild(newChat);
-  });
 
-  ipcRenderer.on('selected-directory', (event, directoryPath) => {
-    // Get the directory contents
-    const fs = require('fs');
+    const newResponse = document.createElement('div');
+    newResponse.classList.add('bg-gray-300');
+    newResponse.classList.add('w-3/5');
+    newResponse.classList.add('mx-4');
+    newResponse.classList.add('my-2');
+    newResponse.classList.add('p-4');
+    newResponse.classList.add('rounded-xl');
+    newResponse.classList.add('clearfix');
 
-    recListFiles(directoryPath, fileList, fs);
-  });
+    const requestObject = {
+      query: newChat.textContent,
+    };
+    responseText = chatRequest(requestObject);
+    newResponse.textContent = responseText
+    chatContainer.appendChild(newResponse);
+  }
+});
 
-  function recListFiles(path, fileList, fs) {
-    console.log(path);
-    const itemElement = document.createElement('li');
-    if (!fs.statSync(path).isDirectory()) {
-      // Base case (file)
-      itemElement.textContent = `📃 ${path.split("/").slice(-1)}`;
-      itemElement.classList.add('indent-2');
-      fileList.appendChild(itemElement);
-    } else {
-      const dirContents = fs.readdirSync(path);
-      itemElement.textContent = `📁 ${path.split("\\").slice(-1)}`
-      fileList.appendChild(itemElement);
-      // Recursive step
-      for (const item of dirContents) {
-        recListFiles(`${path}/${item}`, fileList, fs);
-      }
+ipcRenderer.on('selected-directory', (event, directoryPath) => {
+  // Get the directory contents
+  const fs = require('fs');
+
+  const requestObject = {
+    key: directoryPath,
+  };
+  fileRequest(requestObject);
+
+  recListFiles(directoryPath, fileList, fs);
+});
+
+function recListFiles(path, fileList, fs) {
+  console.log(path);
+  const itemElement = document.createElement('li');
+  if (!fs.statSync(path).isDirectory()) {
+    // Base case (file)
+    itemElement.textContent = `📃 ${path.split("/").slice(-1)}`;
+    itemElement.classList.add('indent-2');
+    fileList.appendChild(itemElement);
+  } else {
+    const dirContents = fs.readdirSync(path);
+    itemElement.textContent = `📁 ${path.split("\\").slice(-1)}`
+    fileList.appendChild(itemElement);
+    // Recursive step
+    for (const item of dirContents) {
+      recListFiles(`${path}/${item}`, fileList, fs);
     }
   }
+}
