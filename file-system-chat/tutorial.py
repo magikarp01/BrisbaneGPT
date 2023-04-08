@@ -24,8 +24,8 @@ def get_gutenberg(url):
 
 romeoandjuliet_data = get_gutenberg('https://www.gutenberg.org/cache/epub/1513/pg1513.txt')
 
-text_splitter = TokenTextSplitter(chunk_size=100, chunk_overlap=0)
-romeoandjuliet_doc = [text_splitter.split_documents(romeoandjuliet_data)[0]]
+text_splitter = TokenTextSplitter(chunk_size=1000, chunk_overlap=0)
+romeoandjuliet_doc = text_splitter.split_documents(romeoandjuliet_data)
 
 embeddings = OpenAIEmbeddings()
 vectordb = Chroma.from_documents(romeoandjuliet_doc, embeddings, persist_directory=persist_directory)
