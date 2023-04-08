@@ -1,4 +1,5 @@
 import os
+import glob
 import platform
 
 from dotenv import load_dotenv
@@ -29,8 +30,15 @@ def pdf_load_and_split(filename):
     return PyPDFLoader(filename).load_and_split()
 
 def dir_load_and_split(dirname):
-    loader = DirectoryLoader(dirname)
-    return text_splitter.split_documents(loader.load())
+    all_docs = []
+    for filename in glob.glob(f'{dirname}/**/*.txt', recursive=True):
+        print(filename)
+        all_docs.extend(text_load_and_split(filename))
+    for filename in glob.glob(f'{dirname}/**/*.pdf', recursive=True):
+        print(filename)
+        all_docs.extend(pdf_load_and_split(filename))
+    
+    return all_docs
 
 def mark_docs(docs):
     for doc in docs:
@@ -38,10 +46,9 @@ def mark_docs(docs):
     return docs
 
 
-# docs = mark_docs(dir_load_and_split("sample-files"))
-docs = mark_docs(pdf_load_and_split("sample-files/project7_decoded.pdf"))
+docs = mark_docs(dir_load_and_split("sample-files"))
+# docs = mark_docs(pdf_load_and_split("sample-files/project7_decoded.pdf"))
 
 # vectordb = Chroma.from_documents(rtg_docs, embeddings, persist_directory=persist_directory)
 vectordb = Chroma.from_documents(docs, embeddings, persist_directory=persist_directory)
-# vectordb.add_documents(rtg_docs)
 vectordb.persist()
