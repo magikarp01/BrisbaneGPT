@@ -16,25 +16,28 @@ from langchain.document_loaders import GutenbergLoader
 print('Python:', platform.python_version())
 
 load_dotenv()
-# persist_directory="./embeddings/rtg"
 persist_directory="./embeddings/sample-dir"
 
 embeddings = OpenAIEmbeddings()
 vectordb = Chroma(persist_directory=persist_directory, embedding_function=embeddings)
 
-file_qa = ChatVectorDBChain.from_llm(OpenAI(temperature=0, 
-    model_name="gpt-3.5-turbo"), vectordb, return_source_documents=True)
+try:
+    file_qa = ChatVectorDBChain.from_llm(OpenAI(temperature=0, 
+        model_name="gpt-3.5-turbo"), vectordb, return_source_documents=True)
+except:
+    print("Failed query")
 
 chat_history=[]
 
-query = "How can I make a trade when one of my orders was filled? Can you identify which text file you're getting your answer from?"
-result = file_qa({"question": query, "chat_history": chat_history})
-answer = result["answer"]
-print(answer)
-chat_history.append((query, answer))
+def ask_query(query, chat_history):
+    result = file_qa({"question": query, "chat_history": chat_history})
+    answer = result["answer"]
+    print(answer)
+    chat_history.append((query, answer))
+    return result
 
-query = "Also, what question did I ask about Romeo and Juliet? Can you identify which text file this question is in?"
-result = file_qa({"question": query, "chat_history": chat_history})
-answer = result["answer"]
-print(answer)
-chat_history.append((query, answer))
+# query = "How can I make a trade when one of my orders was filled? Also, what question did I ask about Romeo and Juliet? Also, do you know the metadata of the files that you got this information from?"
+# query = "How can I make a trade when one of my orders was filled? Also, do you know what files you got this information from?"
+# query = "Also, what question did I ask about Romeo and Juliet? Can you identify which text file this question is in?"
+query = "What school am I attending right now? Also, what do I have to do in my CS project? What files did you use to answer these questions?"
+ask_query(query, chat_history)
