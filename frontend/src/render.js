@@ -17,21 +17,30 @@ clearDirectoryButton.addEventListener('click', () => {
     fileList.innerHTML = '';
 });
 
-chatSubmitButton.addEventListener('click', () => {
-    // Add a chat
-    const newChat = document.createElement('div');
-    newChat.classList.add('bg-blue-500');
-    newChat.classList.add('float-right');
-    newChat.classList.add('w-3/5');
-    newChat.classList.add('mx-4');
-    newChat.classList.add('my-2');
-    newChat.classList.add('p-4');
-    newChat.classList.add('rounded-xl');
-    newChat.classList.add('clearfix');
+chatText.addEventListener('keydown', (event) => {
+    if (event.key === 'Enter') {
+      event.preventDefault(); // Prevent the form from submitting
+      chatSubmitButton.click() // Submit the form
+    }
+});
 
-    newChat.textContent = chatText.value;
-    chatText.value = '';
-    chatContainer.appendChild(newChat);
+chatSubmitButton.addEventListener('click', () => {
+    if(chatText.value.length > 0){
+        // Add a chat
+        const newChat = document.createElement('div');
+        newChat.classList.add('bg-blue-500');
+        newChat.classList.add('float-right');
+        newChat.classList.add('w-3/5');
+        newChat.classList.add('mx-4');
+        newChat.classList.add('my-2');
+        newChat.classList.add('p-4');
+        newChat.classList.add('rounded-xl');
+        newChat.classList.add('clearfix');
+
+        newChat.textContent = chatText.value;
+        chatText.value = '';
+        chatContainer.appendChild(newChat);
+    }
 });
 
 ipcRenderer.on('selected-directory', (event, directoryPath) => {  
