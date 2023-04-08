@@ -33,8 +33,10 @@ def text_load_and_split(read_fname, text_splitter, sys_fname = None):
             doc.metadata["source"] = sys_fname
     return docs
 
-def pdf_load_and_split(filename):
-    return PyPDFLoader(filename).load_and_split()
+# if text splitter is not specified, docs will be split by page (unknown chunk size)
+# if text splitter is specified, docs no longer have page number
+def pdf_load_and_split(filename, text_splitter=None):
+    return PyPDFLoader(filename).load_and_split(text_splitter=text_splitter)
 
 def file_load_and_split(filename, text_splitter):
     path = Path(filename)
@@ -90,11 +92,11 @@ def mark_docs(docs):
             doc.page_content = f'Source filepath is {doc.metadata["source"]} for: "{doc.page_content}"'
     return docs
 
-def generate_embeddings(persist_dir, source_dir, chunk_size=500):
+def generate_embeddings(persist_dir, source, chunk_size=500):
     embeddings = OpenAIEmbeddings()
     text_splitter = TokenTextSplitter(chunk_size=chunk_size, chunk_overlap=0) 
 
-    docs = load_and_split(source_dir, text_splitter=text_splitter)
+    docs = load_and_split(source, text_splitter=text_splitter)
     docs = mark_docs(docs)
     vectordb = Chroma.from_documents(docs, embeddings, persist_directory=persist_dir)
     vectordb.persist()
