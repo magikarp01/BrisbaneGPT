@@ -1,3 +1,7 @@
+import warnings
+warnings.filterwarnings("ignore") # lol
+
+
 import os
 import platform
 
@@ -53,5 +57,3 @@ if __name__ == '__main__':
     file_qa = make_chatbot(persist_directory, top_k_docs=5)
     chat_history = []
     result = ask_query(file_qa, query, chat_history)
-    print(result)
-
