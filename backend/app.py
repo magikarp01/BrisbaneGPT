@@ -15,8 +15,8 @@ def hello():
 
 @app.route('/file', methods=['POST'])
 def file():
-    path = request.form['path']
-    result = dummy_file(path==path)
+    path = request.json['path']
+    result = dummy_file(path)
     if result:
         return '', 200
     else:
@@ -24,10 +24,9 @@ def file():
 
 @app.route('/chat', methods=['POST'])
 def chat():
-    print(request.json)
     query = request.json['query']
     result = dummy_chat(query=query)
     return jsonify({"response": result}), 200
 
 if __name__ == '__main__':
-   app.run(host="127.0.0.1", port=5000)
+   app.run(port=5000)

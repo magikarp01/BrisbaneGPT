@@ -14,23 +14,22 @@ const SERVER_URL = "http://localhost:5000";
 })();
 
 const fileRequest = async (requestObject) => {
-  response = await axios
+  res = await axios
     .post(`${SERVER_URL}/file`, requestObject)
     .catch((error) => {
       console.error(error);
     });
-
-  return response.data
+  return res;
 }
 
 const chatRequest = async (requestObject) => {
-  resp = await axios
+  res = await axios
     .post(`${SERVER_URL}/chat`, requestObject)
     .catch((error) => {
       console.error(error);
     });
   
-  return resp.data.response;
+  return res.data.response;
 }
 
 const selectDirectoryButton = document.getElementById('select-dir');
@@ -114,7 +113,7 @@ ipcRenderer.on('selected-directory', async (event, directoryPath) => {
   const fs = require('fs');
 
   const requestObject = {
-    key: directoryPath,
+    path: directoryPath,
   };
   await fileRequest(requestObject);
 
