@@ -50,8 +50,8 @@ if __name__ == '__main__':
     # query = "What school am I attending right now? Also, what is my University Login ID for my vim/nano homework? What files did you use to answer these questions?"
     query = "What are the data structure requirements for my CS project? What file and page number did you find this on?"
     # query = "What does get_module_name do? What file is this in?"
-    file_qa = make_chatbot(persist_directory)
+    file_qa = make_chatbot(persist_directory, top_k_docs=5)
     chat_history = []
-    ask_query(file_qa, query, chat_history)
-
+    result = ask_query(file_qa, query, chat_history)
+    print(result)
 

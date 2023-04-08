@@ -6,8 +6,6 @@ import tempfile
 from git import Repo
 from urllib.parse import urlparse
 
-import loaders
-
 from dotenv import load_dotenv
 import openai
 import chromadb
@@ -17,15 +15,33 @@ from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.vectorstores import Chroma
 from langchain.llms import OpenAI
 from langchain.chains import ChatVectorDBChain
+from langchain.text_splitter import TokenTextSplitter
+from langchain.document_loaders import UnstructuredFileLoader, DirectoryLoader, PyPDFLoader
+
 
 load_dotenv()
 
-def file_load_and_split(filename):
+
+# text_splitter = TokenTextSplitter(chunk_size=500, chunk_overlap=0)
+
+def text_load_and_split(read_fname, text_splitter, sys_fname = None):
+    loader = UnstructuredFileLoader(read_fname)
+    docs = text_splitter.split_documents(loader.load())
+
+    if sys_fname:
+        for doc in docs:
+            doc.metadata["source"] = sys_fname
+    return docs
+
+def pdf_load_and_split(filename):
+    return PyPDFLoader(filename).load_and_split()
+
+def file_load_and_split(filename, text_splitter):
     path = Path(filename)
     if path.suffix == ".txt":
-        return loaders.text_load_and_split(filename)
+        return text_load_and_split(filename, text_splitter=text_splitter)
     elif path.suffix == ".pdf":
-        return loaders.pdf_load_and_split(filename)
+        return pdf_load_and_split(filename)
     elif path.suffix in [".py", ".c", "."]:
         with open(filename, 'r') as f:
             # Create a temporary file with a .txt suffix
@@ -33,15 +49,15 @@ def file_load_and_split(filename):
                 # Write the contents of the Python file to the temporary file
                 tf.write(f.read().encode('utf-8'))
                 # Get the name of the temporary file
-                return loaders.text_load_and_split(tf.name, filename)
+                return text_load_and_split(tf.name, text_splitter=text_splitter, sys_fname=filename)
     else:
         return []
 
-def dir_load_and_split(dirname):
+def dir_load_and_split(dirname, text_splitter):
     all_docs = []
     for file in glob.glob(f'{dirname}/**/*', recursive=True):
         print(file)
-        all_docs.extend(file_load_and_split(file))
+        all_docs.extend(file_load_and_split(file, text_splitter=text_splitter))
     return all_docs
 
 
@@ -53,15 +69,15 @@ def repo_load(git_url, store_repo_dir):
     
 
 
-def load_and_split(fname):
+def load_and_split(fname, text_splitter):
     if bool(urlparse(fname).scheme):
         dir_name = fname.split('/')[-1]
         repo_load(fname, f"./git-repos/{fname.split('/')[-1]}")
-        return load_and_split(dir_name)
+        return load_and_split(dir_name, text_splitter=text_splitter)
     if os.path.isdir(fname):
-        return dir_load_and_split(fname)
+        return dir_load_and_split(fname, text_splitter=text_splitter)
     elif os.path.isfile(fname):
-        return file_load_and_split(fname)
+        return file_load_and_split(fname, text_splitter=text_splitter)
     else:
         return None
 
@@ -74,15 +90,15 @@ def mark_docs(docs):
             doc.page_content = f'Source filepath is {doc.metadata["source"]} for: "{doc.page_content}"'
     return docs
 
-def generate_embeddings(persist_dir, source_dir):
+def generate_embeddings(persist_dir, source_dir, chunk_size=500):
     embeddings = OpenAIEmbeddings()
+    text_splitter = TokenTextSplitter(chunk_size=chunk_size, chunk_overlap=0) 
 
-    docs = load_and_split(source_dir)
+    docs = load_and_split(source_dir, text_splitter=text_splitter)
     docs = mark_docs(docs)
     vectordb = Chroma.from_documents(docs, embeddings, persist_directory=persist_dir)
     vectordb.persist()
 
 if __name__ == '__main__':
-    generate_embeddings('./embeddings/sample-dir', "./sample-files")
-
+    generate_embeddings('./embeddings/sample-dir', "./sample-files", chunk_size=500)
 
