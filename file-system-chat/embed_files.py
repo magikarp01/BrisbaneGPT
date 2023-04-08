@@ -26,7 +26,7 @@ def file_load_and_split(filename):
         return loaders.text_load_and_split(filename)
     elif path.suffix == ".pdf":
         return loaders.pdf_load_and_split(filename)
-    elif path.suffix in [".py"]:
+    elif path.suffix in [".py", ".c", "."]:
         with open(filename, 'r') as f:
             # Create a temporary file with a .txt suffix
             with tempfile.NamedTemporaryFile(suffix='.txt', delete=False) as tf:
@@ -69,7 +69,7 @@ def mark_docs(docs):
     for doc in docs:
         if "page" in doc.metadata:
             page = doc.metadata["page"]
-            doc.page_content = f'Source filepath is {doc.metadata["source"]} on page {page} for: "{doc.page_content}"'
+            doc.page_content = f'Source filepath is {doc.metadata["source"]} on page {page+1} for: "{doc.page_content}"'
         else:
             doc.page_content = f'Source filepath is {doc.metadata["source"]} for: "{doc.page_content}"'
     return docs
@@ -82,6 +82,7 @@ def generate_embeddings(persist_dir, source_dir):
     vectordb = Chroma.from_documents(docs, embeddings, persist_directory=persist_dir)
     vectordb.persist()
 
-generate_embeddings('./embeddings/sample-dir', "./sample-files")
+if __name__ == '__main__':
+    generate_embeddings('./embeddings/sample-dir', "./sample-files")
 
 

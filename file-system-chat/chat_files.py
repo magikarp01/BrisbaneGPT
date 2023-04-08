@@ -32,7 +32,10 @@ def make_chatbot(embeddings_directory, top_k_docs=5):
     return file_qa
 
 
-def ask_query(chat_db_chain, query, chat_history):
+def ask_query(chat_db_chain, query, chat_history=None):
+    if chat_history == None:
+        chat_history = []
+    query += " What files (and pages) did you get your information from?"
     result = chat_db_chain({"question": query, "chat_history": chat_history})
     answer = result["answer"]
     print(answer)
