@@ -5,3 +5,5 @@ body {
   max-width: 38rem;
   padding: 2rem;
 }
+
+.fade-in-image { animation: fadeIn 5s; }

@@ -3,6 +3,7 @@ const { ipcRenderer } = require('electron');
 const selectDirectoryButton = document.getElementById('select-dir');
 const clearDirectoryButton = document.getElementById('clear-dir');
 const chatSubmitButton = document.getElementById('chat-submit');
+const clearChatButton = document.getElementById('chat-clear');
 
 const fileList = document.getElementById('file-list');
 const chatText = document.getElementById('chat-text');
@@ -15,6 +16,12 @@ selectDirectoryButton.addEventListener('click', () => {
 clearDirectoryButton.addEventListener('click', () => {
     const fileList = document.getElementById('file-list');
     fileList.innerHTML = '';
+});
+
+clearChatButton.addEventListener('click', () => {
+    while (chatContainer.firstChild) {
+        chatContainer.removeChild(chatContainer.firstChild);
+    }
 });
 
 chatText.addEventListener('keydown', (event) => {
@@ -33,6 +40,7 @@ chatSubmitButton.addEventListener('click', () => {
         newChat.classList.add('w-3/5');
         newChat.classList.add('mx-4');
         newChat.classList.add('my-2');
+        newChat.classList.add('h-auto');
         newChat.classList.add('p-4');
         newChat.classList.add('rounded-xl');
         newChat.classList.add('clearfix');
