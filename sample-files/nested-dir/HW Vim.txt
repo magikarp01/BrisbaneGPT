@@ -1,0 +1,51 @@
+VIM/Nano Homework
+
+Name: Phillip Guo
+Your University Login ID: 118874111
+Course and Section Number: HACS100 0101
+
+You may use either vim or nano for this assignment. You must include the actions taken or shortcuts used to complete each task to receive credit.
+
+1) Find this file in the /tmp directory on terpconnect and make a copy of it in your own home directory.
+cp /tmp/HW_vim.txt ~
+
+2) Edit the new copy of the file: first by putting your name and other information in the space above. Make sure to remove the underscores that are typed in there showing you where to put your information.
+used a three times
+
+3) Once you have done task #2 delete that whole item of the list using commands.
+dd
+
+4) Change the directions of #1 so that it has the full name of the machine terpconnect.umd.edu rather than the shorter version.
+
+5) Save the current state of the buffer as a file named "editor.step05", where editor is replaced with "vim" or "nano" depending on which you are using.
+
+6) Go to the place where you put your name and other information above and put one underscore after each of the items. Hint: This should be done using $ in command mode in vim or CTRL + E in nano to move to the end of a line.  
+
+7) Remove the Hint from the directions of #6 using commands.
+
+8) Go to the beginning of each line you have completed so far and put a * at the beginning of that line.
+
+9) Change teh two typing misstakes on this line to fix my errors.
+
+10) Save the current state of the buffer as a file named "editor.step10", where editor is replaced with "vim" or "nano" depending on which you are using.
+
+11) Change the first word on this line to Modify.
+
+12) Use commands to delete everything on this line that comes before the * and leave the things that come after.
+
+13) Delete every e you find in this line (note: this will be a series of commands - not a single command) (For nano only: CTRL + D deletes the character under the cursor)
+
+14) Delete this whole line
+
+15) Save the current state of the buffer as a file named "editor.step15", where editor is replaced with "vim" or "nano" depending on which you are using.
+
+16) Copy this line so that it appears 3 times rather than once (For vim only: y = yank [copy] and p = paste)
+
+17) Type your name between the stars: **
+
+18) Delete the word that appears twice on this this line.
+
+19) Delete the parenthetical. (These are things that appear between parentheses.)
+
+20) Save the current state of the buffer as a file named "editor.step20", where editor is replaced with "vim" or "nano" depending on which you are using.
+

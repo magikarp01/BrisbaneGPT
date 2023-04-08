@@ -21,9 +21,12 @@ persist_directory="./embeddings/sample-dir"
 embeddings = OpenAIEmbeddings()
 vectordb = Chroma(persist_directory=persist_directory, embedding_function=embeddings)
 
+# chat_chain = ChatVectorDBChain()
+
 try:
     file_qa = ChatVectorDBChain.from_llm(OpenAI(temperature=0, 
-        model_name="gpt-3.5-turbo"), vectordb, return_source_documents=True)
+        model_name="gpt-3.5-turbo"), vectordb, return_source_documents=True,
+        top_k_docs_for_context=5)
 except:
     print("Failed query")
 
@@ -36,8 +39,10 @@ def ask_query(query, chat_history):
     chat_history.append((query, answer))
     return result
 
-# query = "How can I make a trade when one of my orders was filled? Also, what question did I ask about Romeo and Juliet? Also, do you know the metadata of the files that you got this information from?"
-# query = "How can I make a trade when one of my orders was filled? Also, do you know what files you got this information from?"
+# query = "How can I make a trade when one of my orders was filled? Also, what question did I ask about Romeo and Juliet? Also, do you know which filepaths you got this information from?"
 # query = "Also, what question did I ask about Romeo and Juliet? Can you identify which text file this question is in?"
-query = "What school am I attending right now? Also, what do I have to do in my CS project? What files did you use to answer these questions?"
+query = "What school am I attending right now? Also, what is my University Login ID for my vim/nano homework? What files did you use to answer these questions?"
+# query = "What file are the specifications of my CS project in?"
 ask_query(query, chat_history)
+
+
