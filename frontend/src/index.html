@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Hello World!</title>
+    <link rel="stylesheet" href="index.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="render.js"></script>
+  </head>
+  <body class="flex h-screen p-0">
+    <div class="bg-gray-200 w-4/5">
+      <button id="select-dir" class="bg-gray-500 text-white font-bold mx-5 mt-5 py-2 px-4 rounded opacity-50">
+        Select Directory
+      </button>
+      <!-- Sidebar content goes here -->
+      <div class="m-5 text-gray-700 text-sm">
+        <ul id="file-list"></ul>
+      </div>
+    </div>
+    <div class="flex w-full">
+      <!-- Main content goes here -->
+      <h1>Hello World</h1>
+      <div class="absolute bottom-5 justify-center w-4/5">
+        <!-- Text box -->
+        <input class="bg-gray-100 rounded-xl w-3/5 mx-5 px-5 py-3 text-gray-700 focus:outline-none focus:shadow-outline" type="text" id="chat" />
+        <button class="bg-blue-500 text-white font-bold py-2 px-4 rounded opacity-50">
+          Submit
+        </button>
+      </div>
+    </div>
+  </body>
+</html>

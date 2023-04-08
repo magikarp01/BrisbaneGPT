@@ -1,0 +1,25 @@
+#!/bin/bash
+
+if [ $# -ne 2 ]
+then
+  echo "incorrect number of shell arguments, input 2"
+  exit 1
+fi
+
+rule=$(iptables -C FORWARD -s $1 -d $2 -j DROP)
+if [ $? -ne 0 ]
+then
+  iptables -I FORWARD -s $1 -d $2 -j DROP
+  echo "Rule added: $1 -> $2"
+else
+  echo "Rule already exists, do you want to delete? (y/n)"
+  read ans
+
+  if [ $ans == "y" ]
+  then
+    iptables -D FORWARD -s $1 -d $2 -j DROP
+    echo "Rule removed: $1 -> $2"
+  else
+    echo "Rule not removed"
+  fi
+fi
