@@ -24,6 +24,11 @@ const fileRequest = (requestObject) => {
     })
 }
 
+/*const chatRequest = (requestObject) => {
+  axios
+    .post(`${SERVER_URL}/chat`)
+}*/
+
 const selectDirectoryButton = document.getElementById('select-dir');
 const fileList = document.getElementById('file-list');
 
