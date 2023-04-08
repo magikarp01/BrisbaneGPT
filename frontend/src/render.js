@@ -115,6 +115,7 @@ ipcRenderer.on('selected-directory', async (event, directoryPath) => {
   const requestObject = {
     path: directoryPath,
   };
+
   await fileRequest(requestObject);
 
   recListFiles(directoryPath, fileList, fs);
