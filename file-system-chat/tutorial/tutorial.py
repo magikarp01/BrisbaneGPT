@@ -1,6 +1,7 @@
 import os
 import platform
 
+from dotenv import load_dotenv
 import openai
 import chromadb
 import langchain
@@ -12,12 +13,13 @@ from langchain.llms import OpenAI
 from langchain.chains import ChatVectorDBChain
 from langchain.document_loaders import GutenbergLoader
 
+load_dotenv()
 print('Python:', platform.python_version())
 
 os.environ["OPENAI_API_KEY"] = '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'
 persist_directory="./embeddings"
 
-def get_gutenberg(url):
+def get_gutenb(url):
     loader = GutenbergLoader(url)
     data = loader.load()
     return data

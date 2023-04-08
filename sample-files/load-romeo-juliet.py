@@ -1,6 +1,7 @@
 import os
 import platform
 
+from dotenv import load_dotenv
 import openai
 import chromadb
 import langchain
@@ -14,7 +15,8 @@ from langchain.document_loaders import GutenbergLoader
 
 print('Python:', platform.python_version())
 
-os.environ["OPENAI_API_KEY"] = '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'
+load_dotenv()
+# old key # os.environ["OPENAI_API_KEY"] = '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'
 persist_directory="./embeddings"
 
 embeddings = OpenAIEmbeddings()
@@ -23,11 +25,13 @@ vectordb = Chroma(persist_directory=persist_directory, embedding_function=embedd
 romeoandjuliet_qa = ChatVectorDBChain.from_llm(OpenAI(temperature=0, 
     model_name="gpt-3.5-turbo"), vectordb, return_source_documents=True)
 
-chat_history=""
+chat_history=[]
 
 query = "Have Romeo and Juliet spent the night together? Provide a verbose answer, referencing passages from the book."
 result = romeoandjuliet_qa({"question": query, "chat_history": chat_history})
-print(result["answer"])
+answer = result["answer"]
+print(answer)
+chat_history.append((query, answer))
 
 """
 def find_similar_documents(query, vectordb, embeddings, top_k=5):
