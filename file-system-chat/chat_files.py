@@ -16,33 +16,39 @@ from langchain.document_loaders import GutenbergLoader
 print('Python:', platform.python_version())
 
 load_dotenv()
-persist_directory="./embeddings/sample-dir"
 
-embeddings = OpenAIEmbeddings()
-vectordb = Chroma(persist_directory=persist_directory, embedding_function=embeddings)
 
-# chat_chain = ChatVectorDBChain()
+def make_chatbot(embeddings_directory, top_k_docs=5):
+    embeddings = OpenAIEmbeddings()
+    vectordb = Chroma(persist_directory=embeddings_directory, embedding_function=embeddings)
 
-try:
-    file_qa = ChatVectorDBChain.from_llm(OpenAI(temperature=0, 
-        model_name="gpt-3.5-turbo"), vectordb, return_source_documents=True,
-        top_k_docs_for_context=5)
-except:
-    print("Failed query")
+    try:
+        file_qa = ChatVectorDBChain.from_llm(OpenAI(temperature=0, 
+            model_name="gpt-3.5-turbo"), vectordb, return_source_documents=True,
+            top_k_docs_for_context=top_k_docs)
+    except:
+        print("Not enough docs")
+    
+    return file_qa
 
-chat_history=[]
 
-def ask_query(query, chat_history):
-    result = file_qa({"question": query, "chat_history": chat_history})
+def ask_query(chat_db_chain, query, chat_history):
+    result = chat_db_chain({"question": query, "chat_history": chat_history})
     answer = result["answer"]
     print(answer)
     chat_history.append((query, answer))
     return result
 
-# query = "How can I make a trade when one of my orders was filled? Also, what question did I ask about Romeo and Juliet? Also, do you know which filepaths you got this information from?"
-# query = "Also, what question did I ask about Romeo and Juliet? Can you identify which text file this question is in?"
-query = "What school am I attending right now? Also, what is my University Login ID for my vim/nano homework? What files did you use to answer these questions?"
-# query = "What file are the specifications of my CS project in?"
-ask_query(query, chat_history)
+if __name__ == '__main__':
+    
+    persist_directory="./embeddings/sample-dir"
+    # query = "How can I make a trade when one of my orders was filled? Also, what question did I ask about Romeo and Juliet? Also, do you know which filepaths you got this information from?"
+    # query = "Also, what question did I ask about Romeo and Juliet? Can you identify which text file this question is in?"
+    # query = "What school am I attending right now? Also, what is my University Login ID for my vim/nano homework? What files did you use to answer these questions?"
+    query = "What are the data structure requirements for my CS project? What file and page number did you find this on?"
+    # query = "What does get_module_name do? What file is this in?"
+    file_qa = make_chatbot(persist_directory)
+    chat_history = []
+    ask_query(file_qa, query, chat_history)
 
 
