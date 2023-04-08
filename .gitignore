@@ -1,4 +1,5 @@
 .env/
+env/
 embeddings/chroma-collections.parquet
 embeddings/chroma-embeddings.parquet
 embeddings/index/id_to_uuid_bf4d03cb-de8c-488a-903c-eeec10a93b92.pkl
@@ -8,3 +9,4 @@ embeddings/index/uuid_to_id_bf4d03cb-de8c-488a-903c-eeec10a93b92.pkl
 
 electron/node_modules
 .env
+env

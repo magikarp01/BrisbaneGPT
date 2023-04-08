@@ -1,38 +1,36 @@
 const { ipcRenderer } = require('electron');
-const { axios } = require("axois");
+const axios = require("axios");
 
-const SERVER_URL = "http://127.0.0.1:5000";
+const SERVER_URL = "http://localhost:5000";
+
 (() => {
   axios
     .get(`${SERVER_URL}/`)
-    .then((response) => {
-      console.log(response.data);
-    })
+    .then((response) => response.data)
+    .then((data) => console.log(data))
     .catch((error) => {
       console.error(error);
     });
 })();
 
-const fileRequest = (requestObject) => {
-  axios
+const fileRequest = async (requestObject) => {
+  response = await axios
     .post(`${SERVER_URL}/file`, requestObject)
-    .then((response) => {
-      return response.data;
-    })
-    .catch((error) => {
-      console.error(error);
-    })
-}
-
-const chatRequest = (requestObject) => {
-  axios
-    .post(`${SERVER_URL}/chat`)
-    .then((response) => {
-      return response.data.response
-    })
     .catch((error) => {
       console.error(error);
     });
+
+  return response.data
+}
+
+const chatRequest = async (requestObject) => {
+  resp = await axios
+    .post(`${SERVER_URL}/chat`, requestObject)
+    .catch((error) => {
+      console.error(error);
+    });
+  
+  return resp.data.response;
 }
 
 const selectDirectoryButton = document.getElementById('select-dir');
@@ -66,50 +64,59 @@ chatText.addEventListener('keydown', (event) => {
   }
 });
 
-chatSubmitButton.addEventListener('click', () => {
+chatSubmitButton.addEventListener('click', async () => {
     if(chatText.value.length > 0){
-        // Add a chat
-        const newChat = document.createElement('div');
-        newChat.classList.add('bg-blue-500');
-        newChat.classList.add('float-right');
-        newChat.classList.add('w-3/5');
-        newChat.classList.add('mx-4');
-        newChat.classList.add('my-2');
-        newChat.classList.add('h-auto');
-        newChat.classList.add('p-4');
-        newChat.classList.add('rounded-xl');
-        newChat.classList.add('clearfix');
+      // Add a chat
+      const newChat = document.createElement('div');
+      newChat.classList.add('bg-blue-500');
+      newChat.classList.add('w-3/5');
+      newChat.classList.add('ml-auto');
+      newChat.classList.add('my-2');
+      newChat.classList.add('h-auto');
+      newChat.classList.add('p-4');
+      newChat.classList.add('rounded-xl');
 
-    newChat.textContent = chatText.value;
-    chatText.value = '';
-    chatContainer.appendChild(newChat);
+      newChat.textContent = chatText.value;
+      chatText.value = '';
 
-    const newResponse = document.createElement('div');
-    newResponse.classList.add('bg-gray-300');
-    newResponse.classList.add('w-3/5');
-    newResponse.classList.add('mx-4');
-    newResponse.classList.add('my-2');
-    newResponse.classList.add('p-4');
-    newResponse.classList.add('rounded-xl');
-    newResponse.classList.add('clearfix');
+      const newChatContainer = document.createElement('div');
+      newChatContainer.classList.add('clearfix');
+      newChatContainer.appendChild(newChat);
+      chatContainer.appendChild(newChatContainer);
 
-    const requestObject = {
-      query: newChat.textContent,
-    };
-    responseText = chatRequest(requestObject);
-    newResponse.textContent = responseText
-    chatContainer.appendChild(newResponse);
+
+      // Add response to the chat
+      const newResponse = document.createElement('div');
+      newResponse.classList.add('bg-gray-300');
+      newResponse.classList.add('w-3/5');
+      newResponse.classList.add('mx-4');
+      newResponse.classList.add('my-2');
+      newResponse.classList.add('p-4');
+      newResponse.classList.add('rounded-xl');
+      newResponse.classList.add('clearfix');
+
+      const requestObject = {
+        query: newChat.textContent,
+      };
+      responseText = await chatRequest(requestObject);
+      newResponse.textContent = responseText;
+
+      const newResponseContainer = document.createElement('div');
+      newResponseContainer.classList.add('clearfix');
+      newResponseContainer.appendChild(newResponse);
+      
+      chatContainer.appendChild(newResponseContainer);
   }
 });
 
-ipcRenderer.on('selected-directory', (event, directoryPath) => {
+ipcRenderer.on('selected-directory', async (event, directoryPath) => {
   // Get the directory contents
   const fs = require('fs');
 
   const requestObject = {
     key: directoryPath,
   };
-  fileRequest(requestObject);
+  await fileRequest(requestObject);
 
   recListFiles(directoryPath, fileList, fs);
 });

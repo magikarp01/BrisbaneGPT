@@ -24,9 +24,10 @@ def file():
 
 @app.route('/chat', methods=['POST'])
 def chat():
-    query = request.form['query']
+    print(request.json)
+    query = request.json['query']
     result = dummy_chat(query=query)
     return jsonify({"response": result}), 200
 
 if __name__ == '__main__':
-   app.run()
+   app.run(host="127.0.0.1", port=5000)
