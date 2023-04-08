@@ -24,12 +24,21 @@ const fileRequest = (requestObject) => {
     })
 }
 
-/*const chatRequest = (requestObject) => {
+const chatRequest = (requestObject) => {
   axios
     .post(`${SERVER_URL}/chat`)
-}*/
+    .then((response) => {
+      console.log(response.data);
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+}
 
 const selectDirectoryButton = document.getElementById('select-dir');
+const clearDirectoryButton = document.getElementById('clear-dir');
+const chatSubmitButton = document.getElementById('chat-submit');
+
 const fileList = document.getElementById('file-list');
 
 selectDirectoryButton.addEventListener('click', () => {
