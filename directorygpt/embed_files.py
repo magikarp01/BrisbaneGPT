@@ -75,6 +75,10 @@ def load_and_split(fname, text_splitter):
         return dir_load_and_split(fname, text_splitter=text_splitter)
     elif os.path.isfile(fname):
         return file_load_and_split(fname, text_splitter=text_splitter)
+    elif bool(urlparse(fname).scheme):
+        dir_name = fname.split('/')[-1]
+        repo_load(fname, f"./repos/{fname.split('/')[-1]}")
+        return load_and_split(dir_name, text_splitter=text_splitter)
     else:
         return []
     if bool(urlparse(fname).scheme):
