@@ -1,4 +1,5 @@
 const { ipcRenderer } = require('electron');
+const path = require('path');
 const axios = require('axios');
 
 const SERVER_URL = 'http://localhost:8000';
@@ -129,10 +130,9 @@ ipcRenderer.on('selected-directory', async (event, directoryPath) => {
   recListFiles(directoryPath, fileList, fs);
 });
 
-function recListFiles(path, fileList, fs) {
-  console.log(path);
+function recListFiles(fpath, fileList, fs) {
   const itemElement = document.createElement('li');
-  if (!fs.statSync(path).isDirectory()) {
+  if (!fs.statSync(fpath).isDirectory()) {
     // Base case (file)
     const itemLink = document.createElement('a');
     itemLink.href = path;
@@ -141,12 +141,12 @@ function recListFiles(path, fileList, fs) {
     itemElement.classList.add('indent-2');
     fileList.appendChild(itemElement);
   } else {
-    const dirContents = fs.readdirSync(path);
-    itemElement.textContent = `📁 ${path.split('\\').slice(-1)}`;
+    const dirContents = fs.readdirSync(fpath);
+    itemElement.textContent = `📁 ${fpath.split(path.sep).slice(-1)}`;
     fileList.appendChild(itemElement);
     // Recursive step
     for (const item of dirContents) {
-      recListFiles(`${path}/${item}`, fileList, fs);
+      recListFiles(`${fpath}/${item}`, fileList, fs);
     }
   }
 }
