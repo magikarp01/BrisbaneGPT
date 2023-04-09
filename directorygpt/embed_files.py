@@ -7,22 +7,13 @@ from git import Repo
 from urllib.parse import urlparse
 
 from dotenv import load_dotenv
-import openai
-import chromadb
-import langchain
 
 from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.vectorstores import Chroma
-from langchain.llms import OpenAI
-from langchain.chains import ChatVectorDBChain
 from langchain.text_splitter import TokenTextSplitter
-from langchain.document_loaders import UnstructuredFileLoader, DirectoryLoader, PyPDFLoader
-
+from langchain.document_loaders import PyPDFLoader, UnstructuredFileLoader, UnstructuredPowerPointLoader, UnstructuredWordDocumentLoader
 
 load_dotenv()
-
-
-# text_splitter = TokenTextSplitter(chunk_size=500, chunk_overlap=0)
 
 def text_load_and_split(read_fname, text_splitter, sys_fname = None):
     loader = UnstructuredFileLoader(read_fname)
@@ -38,13 +29,23 @@ def text_load_and_split(read_fname, text_splitter, sys_fname = None):
 def pdf_load_and_split(filename, text_splitter=None):
     return PyPDFLoader(filename).load_and_split(text_splitter=text_splitter)
 
+def worddoc_load_and_split(filename, text_splitter=None): 
+    return UnstructuredWordDocumentLoader(filename, mode="elements").load_and_split(text_splitter=text_splitter)
+
+def pptx_load_and_split(filename, text_splitter=None):
+    return UnstructuredPowerPointLoader(filename, mode="elements").load_and_split(text_splitter=text_splitter)
+
 def file_load_and_split(filename, text_splitter):
     path = Path(filename)
     if path.suffix == ".txt":
         return text_load_and_split(filename, text_splitter=text_splitter)
     elif path.suffix == ".pdf":
         return pdf_load_and_split(filename)
-    elif path.suffix in [".py", ".c", "."]:
+    elif path.suffix == ".docx":
+        return worddoc_load_and_split(filename)
+    elif path.suffix == ".pptx":
+        return pptx_load_and_split(filename)
+    elif path.suffix in [".py", ".c", ".java"]:
         with open(filename, 'r') as f:
             # Create a temporary file with a .txt suffix
             with tempfile.NamedTemporaryFile(suffix='.txt', delete=False) as tf:
@@ -68,7 +69,6 @@ def repo_load(git_url, store_repo_dir):
         Repo.clone_from(git_url, store_repo_dir)
     except:
         pass
-    
 
 
 def load_and_split(fname, text_splitter):
@@ -81,7 +81,7 @@ def load_and_split(fname, text_splitter):
     elif os.path.isfile(fname):
         return file_load_and_split(fname, text_splitter=text_splitter)
     else:
-        return None
+        return []
 
 def mark_docs(docs):
     for doc in docs:
