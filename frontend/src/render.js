@@ -37,6 +37,9 @@ const fileList = document.getElementById('file-list');
 const chatText = document.getElementById('chat-text');
 const chatContainer = document.getElementById('messages-container');
 
+const fileLoader = document.getElementById('file-loader');
+const chatLoader = document.getElementById('chat-loader');
+
 selectDirectoryButton.addEventListener('click', () => {
   ipcRenderer.send('open-directory-dialog');
 });
@@ -79,6 +82,17 @@ chatSubmitButton.addEventListener('click', async () => {
     newChatContainer.appendChild(newChat);
     chatContainer.appendChild(newChatContainer);
 
+    // Add loading response
+    chatLoader.classList.remove('hidden');
+
+    const requestObject = {
+      query: newChat.textContent,
+    };
+    responseText = await chatRequest(requestObject);
+
+    // Remove loading response
+    chatLoader.classList.add('hidden');
+
     // Add response to the chat
     const newResponse = document.createElement('div');
     newResponse.classList.add('bg-gray-300');
@@ -90,10 +104,6 @@ chatSubmitButton.addEventListener('click', async () => {
     newResponse.classList.add('rounded-xl');
     newResponse.classList.add('clearfix');
 
-    const requestObject = {
-      query: newChat.textContent,
-    };
-    responseText = await chatRequest(requestObject);
     newResponse.textContent = responseText;
 
     const newResponseContainer = document.createElement('div');
@@ -112,8 +122,10 @@ ipcRenderer.on('selected-directory', async (event, directoryPath) => {
     path: directoryPath,
   };
 
+  // Loading animation
+  fileLoader.classList.remove('hidden');
   await fileRequest(requestObject);
-
+  fileLoader.classList.add('hidden');
   recListFiles(directoryPath, fileList, fs);
 });
 
@@ -122,7 +134,10 @@ function recListFiles(path, fileList, fs) {
   const itemElement = document.createElement('li');
   if (!fs.statSync(path).isDirectory()) {
     // Base case (file)
-    itemElement.textContent = `📃 ${path.split('/').slice(-1)}`;
+    const itemLink = document.createElement('a');
+    itemLink.href = path;
+    itemLink.textContent = `📃 ${path.split('/').slice(-1)}`;
+    itemElement.appendChild(itemLink);
     itemElement.classList.add('indent-2');
     fileList.appendChild(itemElement);
   } else {
