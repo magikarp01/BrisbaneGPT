@@ -1,6 +1,8 @@
-# DirectoryGPT -- A new way to interact with your computer.
+# Brisbane (aka DirectoryGPT) -- A new way to interact with your filesystem.
 
-DirectoryGPT is a file search engine that allows you to chat with your files using an interactive interface. Made for Bitcamp 2023 at UMD.
+If your files could talk, what would they say? Ask your old code to explain itself, your CS project to tell you its requirements, or a folder full of textbooks to summarize themselves—with Brisbane.
+
+Brisbane is a file search engine that allows you to chat with your files using an interactive interface. Made for Bitcamp 2023 at UMD.
 
 ## Usage instructions
 Executable coming soon! Fow now, follow these instructions to reproduce the desktop application.
