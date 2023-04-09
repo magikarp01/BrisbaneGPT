@@ -11,7 +11,7 @@ from directorygpt.chat_files import make_chatbot, ask_query
 
 app = Flask(__name__)
 embeddings_directory = os.path.abspath("./embeddings")
-qa = make_chatbot(embeddings_directory)
+qa = make_chatbot(embeddings_directory, top_k_docs=7)
 
 @app.route('/', methods=["GET"])
 def hello():
@@ -23,7 +23,7 @@ def file():
 
     path = request.json['path']
     generate_embeddings(embeddings_directory, path)
-    qa = make_chatbot(embeddings_directory)
+    qa = make_chatbot(embeddings_directory, top_k_docs=7)
     result = True # TODO
     if result:
         return '', 200
