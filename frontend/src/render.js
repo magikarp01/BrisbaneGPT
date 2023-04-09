@@ -129,32 +129,43 @@ ipcRenderer.on('selected-directory', async (event, directoryPath) => {
   fileLoader.classList.remove('hidden');
   await fileRequest(requestObject);
   fileLoader.classList.add('hidden');
-  recListFiles(directoryPath, fileList, fs);
+  indent_counter = 0
+  recListFiles(directoryPath, fileList, fs, indent_counter);
 });
 
-function recListFiles(fpath, fileList, fs) {
+function recListFiles(fpath, fileList, fs, indent_counter) {
   const itemElement = document.createElement('li');
   if (!fs.statSync(fpath).isDirectory()) {
     // Base case (file)
     const itemLink = document.createElement('a');
     itemLink.href = fpath;
-    if (os.platform() === 'win32') {
-      // The operating system is Windows
-      itemLink.textContent = `📃 ${fpath.split('/').slice(-1)}`;
-    } else if (os.platform() === 'darwin') {
-      // The operating system is macOS
-      itemLink.textContent = `📃 ${fpath.split('\\').slice(-1)}`;
-    }
+    itemLink.target = "_blank";
+    itemLink.textContent = `📃 ${fpath.split('\\').slice(-1)[0].split('/').slice(-1)}`
+
     itemElement.appendChild(itemLink);
-    itemElement.classList.add('indent-2');
+    if(indent_counter > 0){
+      itemElement.classList.add(`indent-${indent_counter}`);
+    }
     fileList.appendChild(itemElement);
   } else {
     const dirContents = fs.readdirSync(fpath);
-    itemElement.textContent = `📁 ${fpath.split(fpath.sep).slice(-1)}`;
+    itemElement.textContent = `📁 ${fpath.split('\\').slice(-1)[0].split('/').slice(-1)}`;
+    if(indent_counter > 0){
+      itemElement.classList.add(`indent-${indent_counter}`);
+    }
     fileList.appendChild(itemElement);
+
+    indent_counter += 2;
     // Recursive step
     for (const item of dirContents) {
-      recListFiles(`${fpath}/${item}`, fileList, fs);
+      if (!fs.statSync(`${fpath}/${item}`).isDirectory()) {
+        recListFiles(`${fpath}/${item}`, fileList, fs, indent_counter);
+      }
+    }
+    for (const item of dirContents) {
+      if (fs.statSync(`${fpath}/${item}`).isDirectory()) {
+        recListFiles(`${fpath}/${item}`, fileList, fs, indent_counter);
+      }
     }
   }
 }
