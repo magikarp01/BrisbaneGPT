@@ -11,7 +11,6 @@ from directorygpt.chat_files import make_chatbot, ask_query
 
 app = Flask(__name__)
 embeddings_directory = os.path.abspath("./embeddings")
-chat_history = []
 qa = make_chatbot(embeddings_directory)
 
 @app.route('/', methods=["GET"])
@@ -34,7 +33,7 @@ def file():
 @app.route('/chat', methods=['POST'])
 def chat():
     query = request.json['query']
-    result = ask_query(qa, query, chat_history)
+    result = ask_query(qa, query)
     answer = result["answer"]
     return jsonify({"response": answer}), 200
 
