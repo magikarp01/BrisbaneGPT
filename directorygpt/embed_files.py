@@ -72,16 +72,16 @@ def repo_load(git_url, store_repo_dir):
 
 
 def load_and_split(fname, text_splitter):
-    if bool(urlparse(fname).scheme):
-        dir_name = fname.split('/')[-1]
-        repo_load(fname, f"./git-repos/{fname.split('/')[-1]}")
-        return load_and_split(dir_name, text_splitter=text_splitter)
     if os.path.isdir(fname):
         return dir_load_and_split(fname, text_splitter=text_splitter)
     elif os.path.isfile(fname):
         return file_load_and_split(fname, text_splitter=text_splitter)
     else:
         return []
+    if bool(urlparse(fname).scheme):
+        dir_name = fname.split('/')[-1]
+        repo_load(fname, f"./git-repos/{fname.split('/')[-1]}")
+        return load_and_split(dir_name, text_splitter=text_splitter)
 
 def mark_docs(docs):
     for doc in docs:

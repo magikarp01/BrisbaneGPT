@@ -1,4 +1,5 @@
 const { ipcRenderer } = require('electron');
+const os = require('os');
 const path = require('path');
 const axios = require('axios');
 
@@ -102,6 +103,7 @@ chatSubmitButton.addEventListener('click', async () => {
     newResponse.classList.add('mx-4');
     newResponse.classList.add('my-2');
     newResponse.classList.add('p-4');
+    newResponse.classList.add('overflow-x-auto');
     newResponse.classList.add('rounded-xl');
     newResponse.classList.add('clearfix');
 
@@ -135,14 +137,20 @@ function recListFiles(fpath, fileList, fs) {
   if (!fs.statSync(fpath).isDirectory()) {
     // Base case (file)
     const itemLink = document.createElement('a');
-    itemLink.href = path;
-    itemLink.textContent = `📃 ${path.split('/').slice(-1)}`;
+    itemLink.href = fpath;
+    if (os.platform() === 'win32') {
+      // The operating system is Windows
+      itemLink.textContent = `📃 ${fpath.split('/').slice(-1)}`;
+    } else if (os.platform() === 'darwin') {
+      // The operating system is macOS
+      itemLink.textContent = `📃 ${fpath.split('\\').slice(-1)}`;
+    }
     itemElement.appendChild(itemLink);
     itemElement.classList.add('indent-2');
     fileList.appendChild(itemElement);
   } else {
     const dirContents = fs.readdirSync(fpath);
-    itemElement.textContent = `📁 ${fpath.split(path.sep).slice(-1)}`;
+    itemElement.textContent = `📁 ${fpath.split(fpath.sep).slice(-1)}`;
     fileList.appendChild(itemElement);
     // Recursive step
     for (const item of dirContents) {
