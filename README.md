@@ -20,6 +20,9 @@ Make sure you have ```npm```, ```python``` and ```anaconda``` installed!
 - On a terminal, run ```python backend/app.py```
 - On a separate terminal, change directory to `/frontend` and run ```npm start```
 
+## Flow of Information
+![Brisbane Flowchart](https://user-images.githubusercontent.com/47124521/230788615-d9ad7a55-f50c-46aa-ba26-129d0cd8d54b.png)
+
 ## Example Usage: Compiling housing information from many sources
 ![image](https://user-images.githubusercontent.com/47124521/230754542-6fa43c86-0072-48fe-bad6-ecf3d3d7555c.png)
 
