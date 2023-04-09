@@ -15,6 +15,7 @@ const SERVER_URL = 'http://localhost:8000';
     });
 })();
 
+// API call for embedding files
 const fileRequest = async (requestObject) => {
   res = await axios.post(`${SERVER_URL}/file`, requestObject).catch((error) => {
     console.error(error);
@@ -22,6 +23,7 @@ const fileRequest = async (requestObject) => {
   return res;
 };
 
+// API call for answering chats
 const chatRequest = async (requestObject) => {
   res = await axios.post(`${SERVER_URL}/chat`, requestObject).catch((error) => {
     console.error(error);
@@ -30,18 +32,22 @@ const chatRequest = async (requestObject) => {
   return res.data.response;
 };
 
+// Buttons
 const selectDirectoryButton = document.getElementById('select-dir');
 const clearDirectoryButton = document.getElementById('clear-dir');
 const chatSubmitButton = document.getElementById('chat-submit');
 const clearChatButton = document.getElementById('chat-clear');
 
+// Lists and containers
 const fileList = document.getElementById('file-list');
 const chatText = document.getElementById('chat-text');
 const chatContainer = document.getElementById('messages-container');
 
+// Loading icons
 const fileLoader = document.getElementById('file-loader');
 const chatLoader = document.getElementById('chat-loader');
 
+// Event listeners
 selectDirectoryButton.addEventListener('click', () => {
   ipcRenderer.send('open-directory-dialog');
 });
@@ -74,6 +80,7 @@ chatSubmitButton.addEventListener('click', async () => {
     newChat.classList.add('my-2');
     newChat.classList.add('h-auto');
     newChat.classList.add('p-4');
+    newChat.classList.add('break-words');
     newChat.classList.add('rounded-xl');
 
     newChat.textContent = chatText.value;
@@ -103,7 +110,7 @@ chatSubmitButton.addEventListener('click', async () => {
     newResponse.classList.add('mx-4');
     newResponse.classList.add('my-2');
     newResponse.classList.add('p-4');
-    newResponse.classList.add('overflow-x-auto');
+    newResponse.classList.add('break-words');
     newResponse.classList.add('rounded-xl');
     newResponse.classList.add('clearfix');
 
@@ -117,6 +124,7 @@ chatSubmitButton.addEventListener('click', async () => {
   }
 });
 
+// When directory is selected, send it to backend
 ipcRenderer.on('selected-directory', async (event, directoryPath) => {
   // Get the directory contents
   const fs = require('fs');
@@ -133,6 +141,7 @@ ipcRenderer.on('selected-directory', async (event, directoryPath) => {
   recListFiles(directoryPath, fileList, fs, indent_counter);
 });
 
+// Recursively list out all files in subdirectories
 function recListFiles(fpath, fileList, fs, indent_counter) {
   const itemElement = document.createElement('li');
   if (!fs.statSync(fpath).isDirectory()) {
@@ -157,11 +166,13 @@ function recListFiles(fpath, fileList, fs, indent_counter) {
 
     indent_counter += 2;
     // Recursive step
+    // First list files
     for (const item of dirContents) {
       if (!fs.statSync(`${fpath}/${item}`).isDirectory()) {
         recListFiles(`${fpath}/${item}`, fileList, fs, indent_counter);
       }
     }
+    // Then list folders
     for (const item of dirContents) {
       if (fs.statSync(`${fpath}/${item}`).isDirectory()) {
         recListFiles(`${fpath}/${item}`, fileList, fs, indent_counter);

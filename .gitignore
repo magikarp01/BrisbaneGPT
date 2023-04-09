@@ -9,3 +9,11 @@ env/
 
 # MacOS
 .DS_Store
+
+app.spec
+
+build/
+
+frontend/node_modules/
+
+dist/

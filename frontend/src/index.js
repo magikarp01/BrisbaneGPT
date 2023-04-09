@@ -4,6 +4,7 @@ const fs = require('fs');
 
 let mainWindow;
 
+// Selecting the directory
 ipcMain.on('open-directory-dialog', (event) => {
   dialog.showOpenDialog({ properties: ['openDirectory'] }).then(result => {
     if (!result.canceled && result.filePaths.length > 0) {
