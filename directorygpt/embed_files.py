@@ -40,12 +40,12 @@ def file_load_and_split(filename, text_splitter):
     if path.suffix == ".txt":
         return text_load_and_split(filename, text_splitter=text_splitter)
     elif path.suffix == ".pdf":
-        return pdf_load_and_split(filename)
+        return pdf_load_and_split(filename, text_splitter=text_splitter)
     elif path.suffix == ".docx":
-        return worddoc_load_and_split(filename)
+        return worddoc_load_and_split(filename, text_splitter=text_splitter)
     elif path.suffix == ".pptx":
-        return pptx_load_and_split(filename)
-    elif path.suffix in [".py", ".c", ".java"]:
+        return pptx_load_and_split(filename, text_splitter=text_splitter)
+    elif path.suffix in [".py", ".c", ".java", ".cpp"]:
         with open(filename, 'r') as f:
             # Create a temporary file with a .txt suffix
             with tempfile.NamedTemporaryFile(suffix='.txt', delete=False) as tf:
