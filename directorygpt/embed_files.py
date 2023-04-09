@@ -98,9 +98,10 @@ def generate_embeddings(persist_dir, source, chunk_size=500):
 
     docs = load_and_split(source, text_splitter=text_splitter)
     docs = mark_docs(docs)
+    for doc in docs:
+        print(len(doc.page_content))
     vectordb = Chroma.from_documents(docs, embeddings, persist_directory=persist_dir)
     vectordb.persist()
 
 if __name__ == '__main__':
     generate_embeddings('./embeddings/sample-dir', "./sample-files", chunk_size=500)
-
