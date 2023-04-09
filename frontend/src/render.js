@@ -103,12 +103,14 @@ chatSubmitButton.addEventListener('click', async () => {
       files.push(f[1]);
     }
     let i = 0;
-    responseText = responseText.replaceAll(
-      /{[^}]*\/([^}]*)}/g,
-      `<a href=${
-        files[i++]
-      } target="_blank" class="text-blue-500 underline">$1</a>`
-    );
+    responseText = responseText
+      .replaceAll('\n', '<br>')
+      .replaceAll(
+        /{[^}]*\/([^}]*)}/g,
+        `<a href=${
+          files[i++]
+        } target="_blank" class="text-blue-500 underline">$1</a>`
+      );
 
     // Remove loading response
     chatLoader.classList.add('hidden');
