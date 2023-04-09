@@ -42,6 +42,7 @@ def ask_query(chat_db_chain, query, chat_history=None):
     query += " What files (and pages) did you get your information from? List the sources using bullets/dashes."
     result = chat_db_chain({"question": query, "chat_history": chat_history})
     answer = result["answer"]
+    print(answer)
     chat_history.append((query, answer))
     return result
 
