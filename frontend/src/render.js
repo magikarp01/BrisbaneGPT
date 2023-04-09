@@ -98,6 +98,17 @@ chatSubmitButton.addEventListener('click', async () => {
       query: newChat.textContent,
     };
     responseText = await chatRequest(requestObject);
+    files = Array();
+    for (const f of responseText.matchAll(/{([^}]*)}/g)) {
+      files.push(f[1]);
+    }
+    let i = 0;
+    responseText = responseText.replaceAll(
+      /{[^}]*\/([^}]*)}/g,
+      `<a href=${
+        files[i++]
+      } target="_blank" class="text-blue-500 underline">$1</a>`
+    );
 
     // Remove loading response
     chatLoader.classList.add('hidden');
@@ -114,7 +125,7 @@ chatSubmitButton.addEventListener('click', async () => {
     newResponse.classList.add('rounded-xl');
     newResponse.classList.add('clearfix');
 
-    newResponse.textContent = responseText;
+    newResponse.innerHTML = responseText;
 
     const newResponseContainer = document.createElement('div');
     newResponseContainer.classList.add('clearfix');
@@ -137,7 +148,7 @@ ipcRenderer.on('selected-directory', async (event, directoryPath) => {
   fileLoader.classList.remove('hidden');
   await fileRequest(requestObject);
   fileLoader.classList.add('hidden');
-  indent_counter = 0
+  indent_counter = 0;
   recListFiles(directoryPath, fileList, fs, indent_counter);
 });
 
@@ -148,18 +159,26 @@ function recListFiles(fpath, fileList, fs, indent_counter) {
     // Base case (file)
     const itemLink = document.createElement('a');
     itemLink.href = fpath;
-    itemLink.target = "_blank";
-    itemLink.textContent = `📃 ${fpath.split('\\').slice(-1)[0].split('/').slice(-1)}`
+    itemLink.target = '_blank';
+    itemLink.textContent = `📃 ${fpath
+      .split('\\')
+      .slice(-1)[0]
+      .split('/')
+      .slice(-1)}`;
 
     itemElement.appendChild(itemLink);
-    if(indent_counter > 0){
+    if (indent_counter > 0) {
       itemElement.classList.add(`indent-${indent_counter}`);
     }
     fileList.appendChild(itemElement);
   } else {
     const dirContents = fs.readdirSync(fpath);
-    itemElement.textContent = `📁 ${fpath.split('\\').slice(-1)[0].split('/').slice(-1)}`;
-    if(indent_counter > 0){
+    itemElement.textContent = `📁 ${fpath
+      .split('\\')
+      .slice(-1)[0]
+      .split('/')
+      .slice(-1)}`;
+    if (indent_counter > 0) {
       itemElement.classList.add(`indent-${indent_counter}`);
     }
     fileList.appendChild(itemElement);
