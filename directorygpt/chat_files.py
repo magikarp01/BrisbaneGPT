@@ -12,10 +12,8 @@ import langchain
 
 from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.vectorstores import Chroma
-from langchain.text_splitter import TokenTextSplitter
 from langchain.llms import OpenAI
 from langchain.chains import ChatVectorDBChain
-from langchain.document_loaders import GutenbergLoader
 
 print('Python:', platform.python_version())
 
@@ -36,10 +34,12 @@ def make_chatbot(embeddings_directory, top_k_docs=5):
     return file_qa
 
 
-def ask_query(chat_db_chain, query, chat_history=None):
+def ask_query(chat_db_chain, query, chat_history=None, default_prompt=None):
+    if default_prompt == None:
+        default_prompt = " What files (and pages) did you get your information from? List the sources using bullets/dashes."
     if chat_history == None:
         chat_history = []
-    query += " What files (and pages) did you get your information from? List the sources using bullets/dashes. This is very important, put curly braces '{}' around the filepath."
+    query += default_prompt
     result = chat_db_chain({"question": query, "chat_history": chat_history})
     answer = result["answer"]
     print(answer)
