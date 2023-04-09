@@ -39,7 +39,7 @@ def make_chatbot(embeddings_directory, top_k_docs=5):
 def ask_query(chat_db_chain, query, chat_history=None):
     if chat_history == None:
         chat_history = []
-    query += " What files (and pages) did you get your information from? List the sources using bullets/dashes. This is very important, put curly braces '{}' around the filepath."
+    query += " What files (and pages) did you get your information from? List the sources using bullets/dashes. This is very important, put curly braces '{}' around the filepath and only the filepath; you MUST do this."
     result = chat_db_chain({"question": query, "chat_history": chat_history})
     answer = result["answer"]
     print(answer)
