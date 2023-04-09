@@ -1,17 +1,16 @@
 from flask import Flask, request, jsonify, make_response
 import json
+from pathlib import Path
+
+import sys
+import os
+sys.path.append(os.getcwd())
 
 from directorygpt.embed_files import generate_embeddings
 from directorygpt.chat_files import make_chatbot, ask_query
 
-def dummy_file(path):
-    return True
-
-def dummy_chat(query):
-    return "hi"
-
 app = Flask(__name__)
-embeddings_directory = "./embeddings"
+embeddings_directory = os.path.abspath("./embeddings")
 chat_history = []
 qa = make_chatbot(embeddings_directory)
 
@@ -21,8 +20,11 @@ def hello():
 
 @app.route('/file', methods=['POST'])
 def file():
+    global qa
+
     path = request.json['path']
     generate_embeddings(embeddings_directory, path)
+    qa = make_chatbot(embeddings_directory)
     result = True # TODO
     if result:
         return '', 200
@@ -37,4 +39,4 @@ def chat():
     return jsonify({"response": answer}), 200
 
 if __name__ == '__main__':
-   app.run(port=5000)
+    app.run(port=8000)

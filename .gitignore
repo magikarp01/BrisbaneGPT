@@ -7,3 +7,6 @@ sample-files/
 demo-files/
 
 env/
+
+# MacOS
+.DS_Store
