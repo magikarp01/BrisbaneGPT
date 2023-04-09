@@ -1,7 +1,7 @@
 const { ipcRenderer } = require('electron');
-const axios = require("axios");
+const axios = require('axios');
 
-const SERVER_URL = "http://localhost:5000";
+const SERVER_URL = 'http://localhost:8000';
 
 (() => {
   axios
@@ -14,23 +14,19 @@ const SERVER_URL = "http://localhost:5000";
 })();
 
 const fileRequest = async (requestObject) => {
-  res = await axios
-    .post(`${SERVER_URL}/file`, requestObject)
-    .catch((error) => {
-      console.error(error);
-    });
+  res = await axios.post(`${SERVER_URL}/file`, requestObject).catch((error) => {
+    console.error(error);
+  });
   return res;
-}
+};
 
 const chatRequest = async (requestObject) => {
-  res = await axios
-    .post(`${SERVER_URL}/chat`, requestObject)
-    .catch((error) => {
-      console.error(error);
-    });
-  
+  res = await axios.post(`${SERVER_URL}/chat`, requestObject).catch((error) => {
+    console.error(error);
+  });
+
   return res.data.response;
-}
+};
 
 const selectDirectoryButton = document.getElementById('select-dir');
 const clearDirectoryButton = document.getElementById('clear-dir');
@@ -46,68 +42,65 @@ selectDirectoryButton.addEventListener('click', () => {
 });
 
 clearDirectoryButton.addEventListener('click', () => {
-    const fileList = document.getElementById('file-list');
-    fileList.innerHTML = '';
+  const fileList = document.getElementById('file-list');
+  fileList.innerHTML = '';
 });
 
 clearChatButton.addEventListener('click', () => {
-    while (chatContainer.firstChild) {
-        chatContainer.removeChild(chatContainer.firstChild);
-    }
+  while (chatContainer.firstChild) {
+    chatContainer.removeChild(chatContainer.firstChild);
+  }
 });
 
 chatText.addEventListener('keydown', (event) => {
   if (event.key === 'Enter') {
     event.preventDefault(); // Prevent the form from submitting
-    chatSubmitButton.click() // Submit the form
+    chatSubmitButton.click(); // Submit the form
   }
 });
 
 chatSubmitButton.addEventListener('click', async () => {
-    if(chatText.value.length > 0){
-      // Add a chat
-      const newChat = document.createElement('div');
-      newChat.classList.add('bg-blue-500');
-      newChat.classList.add('w-3/5');
-      newChat.classList.add('ml-auto');
-      newChat.classList.add('my-2');
-      newChat.classList.add('mx-4');
-      newChat.classList.add('h-auto');
-      newChat.classList.add('p-4');
-      newChat.classList.add('rounded-xl');
+  if (chatText.value.length > 0) {
+    // Add a chat
+    const newChat = document.createElement('div');
+    newChat.classList.add('bg-blue-500');
+    newChat.classList.add('w-3/5');
+    newChat.classList.add('ml-auto');
+    newChat.classList.add('my-2');
+    newChat.classList.add('h-auto');
+    newChat.classList.add('p-4');
+    newChat.classList.add('rounded-xl');
 
-      newChat.textContent = chatText.value;
-      chatText.value = '';
+    newChat.textContent = chatText.value;
+    chatText.value = '';
 
-      const newChatContainer = document.createElement('div');
-      newChatContainer.classList.add('clearfix');
-      newChatContainer.appendChild(newChat);
-      chatContainer.appendChild(newChatContainer);
+    const newChatContainer = document.createElement('div');
+    newChatContainer.classList.add('clearfix');
+    newChatContainer.appendChild(newChat);
+    chatContainer.appendChild(newChatContainer);
 
-      // Create loading response
-      
-      // Add response to the chat
-      const newResponse = document.createElement('div');
-      newResponse.classList.add('bg-gray-300');
-      newResponse.classList.add('text-gray-700');
-      newResponse.classList.add('w-3/5');
-      newResponse.classList.add('mx-4');
-      newResponse.classList.add('my-2');
-      newResponse.classList.add('p-4');
-      newResponse.classList.add('rounded-xl');
-      newResponse.classList.add('clearfix');
+    // Add response to the chat
+    const newResponse = document.createElement('div');
+    newResponse.classList.add('bg-gray-300');
+    newResponse.classList.add('text-gray-700');
+    newResponse.classList.add('w-3/5');
+    newResponse.classList.add('mx-4');
+    newResponse.classList.add('my-2');
+    newResponse.classList.add('p-4');
+    newResponse.classList.add('rounded-xl');
+    newResponse.classList.add('clearfix');
 
-      const requestObject = {
-        query: newChat.textContent,
-      };
-      responseText = await chatRequest(requestObject);
-      newResponse.textContent = responseText;
+    const requestObject = {
+      query: newChat.textContent,
+    };
+    responseText = await chatRequest(requestObject);
+    newResponse.textContent = responseText;
 
-      const newResponseContainer = document.createElement('div');
-      newResponseContainer.classList.add('clearfix');
-      newResponseContainer.appendChild(newResponse);
-      
-      chatContainer.appendChild(newResponseContainer);
+    const newResponseContainer = document.createElement('div');
+    newResponseContainer.classList.add('clearfix');
+    newResponseContainer.appendChild(newResponse);
+
+    chatContainer.appendChild(newResponseContainer);
   }
 });
 
@@ -129,12 +122,12 @@ function recListFiles(path, fileList, fs) {
   const itemElement = document.createElement('li');
   if (!fs.statSync(path).isDirectory()) {
     // Base case (file)
-    itemElement.textContent = `📃 ${path.split("/").slice(-1)}`;
+    itemElement.textContent = `📃 ${path.split('/').slice(-1)}`;
     itemElement.classList.add('indent-2');
     fileList.appendChild(itemElement);
   } else {
     const dirContents = fs.readdirSync(path);
-    itemElement.textContent = `📁 ${path.split("\\").slice(-1)}`
+    itemElement.textContent = `📁 ${path.split('\\').slice(-1)}`;
     fileList.appendChild(itemElement);
     // Recursive step
     for (const item of dirContents) {

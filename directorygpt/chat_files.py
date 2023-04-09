@@ -1,3 +1,7 @@
+import warnings
+warnings.filterwarnings("ignore") # lol
+
+
 import os
 import platform
 
@@ -38,7 +42,6 @@ def ask_query(chat_db_chain, query, chat_history=None):
     query += " What files (and pages) did you get your information from?"
     result = chat_db_chain({"question": query, "chat_history": chat_history})
     answer = result["answer"]
-    print(answer)
     chat_history.append((query, answer))
     return result
 
@@ -53,5 +56,3 @@ if __name__ == '__main__':
     file_qa = make_chatbot(persist_directory, top_k_docs=5)
     chat_history = []
     result = ask_query(file_qa, query, chat_history)
-    print(result)
-

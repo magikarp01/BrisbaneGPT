@@ -5,3 +5,5 @@ langchain
 pypdf
 tiktoken
 unstructured
+gitpython
+flask
