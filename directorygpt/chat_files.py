@@ -39,7 +39,7 @@ def make_chatbot(embeddings_directory, top_k_docs=5):
 def ask_query(chat_db_chain, query, chat_history=None):
     if chat_history == None:
         chat_history = []
-    query += " What files (and pages) did you get your information from?"
+    query += " What files (and pages) did you get your information from? List the sources using bullets/dashes."
     result = chat_db_chain({"question": query, "chat_history": chat_history})
     answer = result["answer"]
     chat_history.append((query, answer))
@@ -53,6 +53,6 @@ if __name__ == '__main__':
     # query = "What school am I attending right now? Also, what is my University Login ID for my vim/nano homework? What files did you use to answer these questions?"
     query = "What are the data structure requirements for my CS project? What file and page number did you find this on?"
     # query = "What does get_module_name do? What file is this in?"
-    file_qa = make_chatbot(persist_directory, top_k_docs=5)
+    file_qa = make_chatbot(persist_directory, top_k_docs=7)
     chat_history = []
     result = ask_query(file_qa, query, chat_history)
