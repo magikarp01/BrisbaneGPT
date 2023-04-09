@@ -71,6 +71,7 @@ chatSubmitButton.addEventListener('click', async () => {
       newChat.classList.add('w-3/5');
       newChat.classList.add('ml-auto');
       newChat.classList.add('my-2');
+      newChat.classList.add('mx-4');
       newChat.classList.add('h-auto');
       newChat.classList.add('p-4');
       newChat.classList.add('rounded-xl');
@@ -83,10 +84,12 @@ chatSubmitButton.addEventListener('click', async () => {
       newChatContainer.appendChild(newChat);
       chatContainer.appendChild(newChatContainer);
 
-
+      // Create loading response
+      
       // Add response to the chat
       const newResponse = document.createElement('div');
       newResponse.classList.add('bg-gray-300');
+      newResponse.classList.add('text-gray-700');
       newResponse.classList.add('w-3/5');
       newResponse.classList.add('mx-4');
       newResponse.classList.add('my-2');
