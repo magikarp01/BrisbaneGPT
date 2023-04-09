@@ -143,14 +143,14 @@ function recListFiles(fpath, fileList, fs, indent_counter) {
     itemLink.textContent = `📃 ${fpath.split('\\').slice(-1)[0].split('/').slice(-1)}`
 
     itemElement.appendChild(itemLink);
-    if(indent_counter > 0){
+    if (indent_counter > 0) {
       itemElement.classList.add(`indent-${indent_counter}`);
     }
     fileList.appendChild(itemElement);
   } else {
     const dirContents = fs.readdirSync(fpath);
     itemElement.textContent = `📁 ${fpath.split('\\').slice(-1)[0].split('/').slice(-1)}`;
-    if(indent_counter > 0){
+    if (indent_counter > 0) {
       itemElement.classList.add(`indent-${indent_counter}`);
     }
     fileList.appendChild(itemElement);
@@ -168,4 +168,11 @@ function recListFiles(fpath, fileList, fs, indent_counter) {
       }
     }
   }
+}
+
+function toggleSlideover() {
+  document.getElementById('slideover-container').classList.toggle('invisible');
+  document.getElementById('slideover-bg').classList.toggle('opacity-0');
+  document.getElementById('slideover-bg').classList.toggle('opacity-50');
+  document.getElementById('slideover').classList.toggle('translate-x-full');
 }
