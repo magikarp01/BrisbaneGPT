@@ -36,10 +36,10 @@ def make_chatbot(embeddings_directory, top_k_docs=5):
     return file_qa
 
 
-def ask_query(chat_db_chain, query, chat_history=None):
+def ask_query(chat_db_chain, query, chat_history=None, default_prompt=" What files (and pages) did you get your information from? List the sources using bullets/dashes."):
     if chat_history == None:
         chat_history = []
-    query += " What files (and pages) did you get your information from? List the sources using bullets/dashes. This is very important, put curly braces '{}' around the filepath and only the filepath; you MUST do this."
+    query += default_prompt
     result = chat_db_chain({"question": query, "chat_history": chat_history})
     answer = result["answer"]
     print(answer)
