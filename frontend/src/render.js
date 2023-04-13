@@ -2,6 +2,8 @@ const { ipcRenderer } = require('electron');
 const os = require('os');
 const path = require('path');
 const axios = require('axios');
+const fs = require('fs');
+const isDemoMode = true;
 
 const SERVER_URL = 'http://localhost:8000';
 
@@ -46,6 +48,11 @@ const chatContainer = document.getElementById('messages-container');
 // Loading icons
 const fileLoader = document.getElementById('file-loader');
 const chatLoader = document.getElementById('chat-loader');
+
+// populate demo files
+if (isDemoMode) {
+  recListFiles(path.join('../', 'demo-files').toString(), fileList, fs, 0);
+}
 
 // Event listeners
 selectDirectoryButton.addEventListener('click', () => {
@@ -142,9 +149,6 @@ chatSubmitButton.addEventListener('click', async () => {
 
 // When directory is selected, send it to backend
 ipcRenderer.on('selected-directory', async (event, directoryPath) => {
-  // Get the directory contents
-  const fs = require('fs');
-
   const requestObject = {
     path: directoryPath,
   };

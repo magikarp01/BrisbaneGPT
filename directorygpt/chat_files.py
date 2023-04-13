@@ -36,7 +36,7 @@ def make_chatbot(embeddings_directory, top_k_docs=5):
 
 def ask_query(chat_db_chain, query, chat_history=None, default_prompt=None):
     if default_prompt == None:
-        default_prompt = " Write your answer first without any sources, then use bullet points to LIST the sources (and pages) you got your information from at the end. ONLY list your sources at the end. This is very important, you MUST put curly braces '{}' around only the source filepath. Do not put curly braces '{}' around the page number."
+        default_prompt = " Write your answer first without any sources, then use bullet points to LIST the sources (and pages) you got your information from at the end. ONLY list your sources at the end if you know how to answer. If you don't know how to answer, do not list sources. This is very important, you MUST put curly braces '{}' around only the source filepath. Do not put curly braces '{}' around the page number."
     if chat_history == None:
         chat_history = []
     query += default_prompt
